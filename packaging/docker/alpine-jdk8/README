@@ -1,0 +1,7 @@
+
+# Build
+docker build -t spohnan/alpine-jdk8 alpine-jdk8/
+docker save spohnan/alpine-jdk8 | docker import - spohnan/alpine-jdk8
+
+# Inspect
+docker run --rm -it spohnan/alpine-jdk8 sh
