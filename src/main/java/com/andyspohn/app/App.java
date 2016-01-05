@@ -1,46 +1,42 @@
 package com.andyspohn.app;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.AbstractMap;
+import java.util.*;
 
 @Controller
 @EnableAutoConfiguration
-@PropertySource("classpath:/application.properties")
 public class App {
 
-    @Autowired
-    private Environment env;
+    private Properties props;
 
     // Given an environment variable name return the value
     @RequestMapping(value={"/env/{name}"}, method=RequestMethod.GET)
     public @ResponseBody AbstractMap.SimpleEntry getValue(@PathVariable(value="name") String key) {
-        return new AbstractMap.SimpleEntry<String, String>(key, env.getProperty(key));
+        return new AbstractMap.SimpleEntry<String, String>(key, System.getenv(key));
     }
 
     // Return a 200/OK by default but uncomment the ResponseStatus to trigger an error response
-    //@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Oh Snap!")
+    // @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Oh Snap!")
     @RequestMapping(value={"/health"}, method=RequestMethod.GET)
-    @ResponseBody
-    String health() {
-        return "OK";
+    public @ResponseBody AbstractMap.SimpleEntry health() {
+        return new AbstractMap.SimpleEntry<String, String>("health", "OK");
     }
 
     // Return the hostname, useful for demonstration of clustered deployments
     @RequestMapping(value={"/host"}, method=RequestMethod.GET)
-    @ResponseBody
-    String host() {
+    public @ResponseBody AbstractMap.SimpleEntry host() {
         String hostname = "Unknown Host";
         try { hostname = InetAddress.getLocalHost().getHostName(); } catch (UnknownHostException e) { /* use default */ }
-        return hostname;
+        return new AbstractMap.SimpleEntry<String, String>("host", hostname);
     }
 
     // Simulate work using a sleep timeout
@@ -52,12 +48,26 @@ public class App {
 
     // Return the version information we included during the build
     @RequestMapping(value={"/", "/version"}, method=RequestMethod.GET)
-    public @ResponseBody Meta version() {
-        return new Meta(env);
+    public @ResponseBody Map version() {
+        if (props == null) { loadProps(); }
+        return new HashMap<String, String>() {{
+            put("name", props.getProperty("project.name"));
+            put("version", props.getProperty("project.version"));
+            put("branch", props.getProperty("project.branch"));
+            put("commit", props.getProperty("project.scm.revision"));
+            put("timestamp", props.getProperty("build.timestamp"));
+        }};
     }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(App.class, args);
     }
 
+    private synchronized void loadProps() {
+        if (props == null) {
+            try {
+                props = PropertiesLoaderUtils.loadProperties(new ClassPathResource("/application.properties"));
+            } catch (IOException e) { /* yep */ }
+        }
+    }
 }
