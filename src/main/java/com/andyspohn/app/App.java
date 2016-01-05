@@ -4,6 +4,7 @@ import org.springframework.boot.*;
 import org.springframework.boot.autoconfigure.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,11 @@ public class App {
     public @ResponseBody AbstractMap.SimpleEntry health() {
         return new AbstractMap.SimpleEntry<String, String>("health", "OK");
     }
+
+    // Return a 500 error
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Oh Snap!")
+    @RequestMapping(value={"/badhealth"}, method=RequestMethod.GET)
+    public void badHealth() { }
 
     // Return the hostname, useful for demonstration of clustered deployments
     @RequestMapping(value={"/host"}, method=RequestMethod.GET)

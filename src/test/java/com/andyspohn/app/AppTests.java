@@ -28,9 +28,16 @@ public class AppTests {
 
     @Test
     public void testEnv() throws Exception {
-        mockMvc.perform(get("/env/FOO").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        // TODO: Just test that there is somthing returned, not sure how to set an environment var at the moment
+        mockMvc.perform(get("/env/USER").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void testBadHealth() throws Exception {
+        mockMvc.perform(get("/badhealth").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+                .andExpect(status().is5xxServerError());
     }
 
     @Test @Ignore("Purposefully not testing so we can demonstrate run time failure of health check")

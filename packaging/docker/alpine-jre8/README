@@ -1,0 +1,6 @@
+
+# Build
+docker build -t spohnan/alpine-jre8 packaging/docker/alpine-jre8/
+
+# Inspect
+docker run --rm -it spohnan/alpine-jre8 sh

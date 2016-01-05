@@ -1,0 +1,28 @@
+
+# Build and run on a local machine (requires Maven install)
+
+mvn package; java -jar target/ws-test-02.jar
+
+# Endpoints
+
+# Display an environment variable (Useful when testing service discovery tools)
+
+http://localhost:8080/env/USER -> {"USER":"spohnae"}
+
+# Health checks (Useful to test container management checks)
+
+http://localhost:8080/health    -> {"health":"OK"}
+http://localhost:8080/badhealth -> 500 Server Error
+
+# Host (Useful to demonstrate load balancing)
+
+http://localhost:8080/host -> {"host":"ws-02.andyspohn.com"}
+
+# Sleep (Useful to simulate work/latency)
+
+http://localhost:8080/sleep/1000 -> {"sleep":"1000"}
+
+# Version (Displays information populated during build)
+
+http://localhost:8080/version ->
+{"name":"ws-test-02","commit":"5374025671","version":"0.0.1","branch":"master","timestamp":"2016-01-05T18:28:44+0000"}

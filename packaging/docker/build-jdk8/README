@@ -1,0 +1,6 @@
+
+# Build
+docker build -t spohnan/build-jdk8 packaging/docker/build-jdk8/
+
+# Inspect
+docker run --rm -it spohnan/build-jdk8 sh
