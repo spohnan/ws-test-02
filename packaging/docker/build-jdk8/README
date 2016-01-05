@@ -1,6 +1,12 @@
 
-# Build
+# Build Image
 docker build -t spohnan/build-jdk8 packaging/docker/build-jdk8/
 
 # Inspect
 docker run --rm -it spohnan/build-jdk8 sh
+
+# Build Application in Container
+docker run --rm \
+    -e BUILD_HOME=/usr/local/ws-test-02/ -e UID=$(id -u) \
+    -v $(pwd):/usr/local/ws-test-02/ spohnan/build-jdk8 \
+    sh -c "cd \$BUILD_HOME; mvn package; chown -R \$UID:\$UID target/"

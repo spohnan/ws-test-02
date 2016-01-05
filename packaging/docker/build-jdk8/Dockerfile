@@ -5,6 +5,9 @@ MAINTAINER Andy@AndySpohn.com
 
 ENV MAVEN_VERSION 3.2.2
 
+# Add Git so when we build we capture the git hash and branch
+RUN apk --update add git
+
 # Add Maven to build applications
 RUN curl -jksSL http://archive.apache.org/dist/maven/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
     | tar -xzf - -C /opt && ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven

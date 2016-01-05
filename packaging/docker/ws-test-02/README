@@ -1,0 +1,6 @@
+
+# Build
+docker build -t spohnan/ws-test-02 -f packaging/docker/ws-test-02/Dockerfile .
+
+# Run
+docker run -i -t --rm -p 8080:8080 spohnan/ws-test-02
