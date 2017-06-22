@@ -100,10 +100,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.7.2</version>
                 <configuration>
-                <b><argLine>
-                   -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath}
-                </argLine></b>
-                <test>**/*.java</test>
+                    <test>**/*.java</test>
                 </configuration>
             </plugin>
 
